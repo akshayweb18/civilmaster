@@ -32,12 +32,12 @@ export const OptionButton = React.memo(({
       onClick={onClick}
       disabled={isDisabled}
       className={`
-        w-full p-6 md:p-8 text-left border rounded-[1.5rem] transition-all duration-200 font-bold text-xl md:text-2xl flex items-center justify-between group no-anim
+        w-full p-4 md:p-8 text-left border rounded-2xl md:rounded-[1.5rem] transition-all duration-200 font-bold text-base md:text-2xl flex items-center justify-between gap-4 group no-anim
         ${statusClass}
         ${isDisabled && !isCorrect && !isWrong ? "opacity-40" : ""}
       `}
     >
-      <span className="flex-grow leading-tight">{option}</span>
+      <span className="grow leading-tight">{option}</span>
       
       {/* Subtle Indicators */}
       <div className="shrink-0 ml-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { Suspense, useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { questions, Question, Difficulty, Subject } from "../../data/questions";
 import { QuestionCard } from "../../components/QuestionCard";
@@ -8,6 +8,15 @@ import { ProgressBar } from "../../components/ProgressBar";
 import { playSound } from "../../utils/sounds";
 
 export default function QuizPage() {
+  return (
+    <Suspense fallback={<QuizLoadingState />}>
+      <QuizPageContent />
+    </Suspense>
+  );
+}
+
+function QuizPageContent() {
+  const [isMounted, setIsMounted] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
   const difficulty = (searchParams.get("difficulty") as Difficulty) || "beginner";
@@ -26,6 +35,10 @@ export default function QuizPage() {
     isCorrect: boolean;
   }>>([]);
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // DATA LOADING FIX
   useEffect(() => {
     // 1. Filter by Difficulty first
@@ -38,16 +51,14 @@ export default function QuizPage() {
       if (subjectPool.length > 0) pool = subjectPool;
     }
 
-    // 3. Shuffle and pick exactly 10
-    const shuffled = [...pool].sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, 10);
-    
-    // 4. Final Fallback: If even the pool is empty, take any 10 from total questions
-    if (selected.length === 0) {
-      setQuizQuestions(questions.slice(0, 10));
-    } else {
-      setQuizQuestions(selected);
-    }
+    // 3. Shuffle and pick exactly 10, filling from the broader bank if needed
+    const selected = [...new Set([
+      ...[...pool].sort(() => 0.5 - Math.random()),
+      ...[...questions.filter((q) => q.difficulty === difficulty)].sort(() => 0.5 - Math.random()),
+      ...[...questions].sort(() => 0.5 - Math.random()),
+    ])].slice(0, 10);
+
+    setQuizQuestions(selected);
   }, [difficulty, subject]);
 
   useEffect(() => {
@@ -98,30 +109,29 @@ export default function QuizPage() {
     }
   };
 
+  if (!isMounted) {
+    return null;
+  }
+
   if (quizQuestions.length === 0) {
-    return (
-      <div className="flex-grow flex flex-col items-center justify-center p-10 animate-in fade-in duration-300">
-        <div className="w-16 h-16 border-4 border-slate-900 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-        <p className="text-xs font-black uppercase tracking-[0.4em] text-slate-400">Deploying Data...</p>
-      </div>
-    );
+    return <QuizLoadingState />;
   }
 
   return (
-    <div className="flex-grow flex flex-col items-center p-6 md:p-12 max-w-4xl mx-auto w-full relative">
-      <div className="w-full flex items-center justify-between mb-8 animate-in slide-in-from-top-4 duration-300">
-        <div className="space-y-1">
-          <button onClick={goBack} className="flex items-center gap-2 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-rose-500 transition-colors mb-2">
+    <div className="grow flex flex-col items-center px-4 py-4 md:p-12 max-w-4xl mx-auto w-full relative">
+      <div className="w-full flex items-start md:items-center justify-between gap-4 mb-6 md:mb-8 animate-in slide-in-from-top-4 duration-300">
+        <div className="space-y-1 min-w-0">
+          <button onClick={goBack} className="flex items-center gap-2 text-slate-400 font-black uppercase text-[9px] md:text-[10px] tracking-widest hover:text-rose-500 transition-colors mb-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Abort Mission
           </button>
-          <div className="px-3 py-1 bg-slate-900 text-white text-[8px] font-black rounded-full uppercase tracking-widest inline-block mb-1">Civil Engineer</div>
-          <p className="text-4xl font-black text-slate-900 leading-none">Task <span className="text-blue-600">#{currentIndex + 1}</span></p>
+          <div className="px-3 py-1 bg-slate-900 text-white text-[8px] md:text-[8px] font-black rounded-full uppercase tracking-widest inline-block mb-1">Civil Engineer</div>
+          <p className="text-3xl md:text-4xl font-black text-slate-900 leading-none">Task <span className="text-blue-600">#{currentIndex + 1}</span></p>
         </div>
-        <div className={`w-20 h-20 rounded-3xl flex flex-col items-center justify-center border-4 glass-card font-black ${timeLeft <= 5 ? "border-rose-500 text-rose-500 animate-pulse" : "text-slate-900 border-slate-900"}`}>
-          <span className="text-3xl">{timeLeft}</span>
+        <div className={`w-16 h-16 md:w-20 md:h-20 rounded-3xl flex flex-col items-center justify-center border-4 glass-card font-black ${timeLeft <= 5 ? "border-rose-500 text-rose-500 animate-pulse" : "text-slate-900 border-slate-900"}`}>
+          <span className="text-2xl md:text-3xl">{timeLeft}</span>
         </div>
       </div>
       
@@ -138,12 +148,21 @@ export default function QuizPage() {
       </div>
 
       {isAnswered && (
-        <div className="w-full mt-10 flex justify-end animate-in slide-in-from-bottom-4 duration-300">
-          <button onClick={nextQuestion} className="px-12 py-6 bg-slate-900 text-white rounded-[1.5rem] font-black text-2xl hover:scale-105 shadow-2xl transition-all uppercase tracking-widest">
+        <div className="w-full mt-6 md:mt-10 flex justify-stretch md:justify-end animate-in slide-in-from-bottom-4 duration-300">
+          <button onClick={nextQuestion} className="w-full md:w-auto px-8 md:px-12 py-5 md:py-6 bg-slate-900 text-white rounded-2xl md:rounded-3xl font-black text-base md:text-2xl hover:scale-105 shadow-2xl transition-all uppercase tracking-widest">
             {currentIndex === quizQuestions.length - 1 ? "Complete Mission" : "Next Task"}
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function QuizLoadingState() {
+  return (
+    <div className="grow flex flex-col items-center justify-center px-4 py-10 md:p-10 animate-in fade-in duration-300 text-center">
+      <div className="w-14 h-14 md:w-16 md:h-16 border-4 border-slate-900 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+      <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-slate-400">Deploying Data...</p>
     </div>
   );
 }

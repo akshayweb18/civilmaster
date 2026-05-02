@@ -85,42 +85,42 @@ export default function ResultPage() {
   if (!result) return null;
 
   return (
-    <div className="flex-grow flex flex-col items-center px-4 pt-0 pb-12 md:px-12 md:pt-0 md:pb-20 max-w-5xl mx-auto w-full space-y-4 no-anim">
+    <div className="grow flex flex-col items-center px-4 pt-4 pb-10 md:px-12 md:pt-0 md:pb-20 max-w-5xl mx-auto w-full space-y-4 no-anim">
       <div className="bg-command" />
       
-      <div className="w-full command-card rounded-[3rem] p-8 md:p-14 text-center relative overflow-hidden">
-        <div className="w-full flex justify-between items-center mb-8">
-          <Link href="/" className="flex items-center gap-2 text-slate-400 font-bold uppercase text-[10px] tracking-widest hover:text-indigo-600 transition-colors">
+      <div className="w-full command-card rounded-[2rem] md:rounded-[3rem] p-5 md:p-14 text-center relative overflow-hidden">
+        <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6 md:mb-8">
+          <Link href="/" className="flex items-center gap-2 text-slate-400 font-bold uppercase text-[9px] md:text-[10px] tracking-widest hover:text-indigo-600 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Dashboard
           </Link>
-          <div className="tag-tech bg-indigo-50 text-indigo-600 border-indigo-100">Mission_Status: COMPLETED</div>
+          <div className="tag-tech bg-indigo-50 text-indigo-600 border-indigo-100 self-start sm:self-auto">Mission_Status: COMPLETED</div>
         </div>
 
-        <h1 className="text-3xl md:text-5xl heading-pro text-slate-900 mb-4 tracking-tighter">Mission <span className="text-indigo-600">Report</span></h1>
+        <h1 className="text-3xl md:text-5xl heading-pro text-slate-900 mb-3 md:mb-4 tracking-tighter">Mission <span className="text-indigo-600">Report</span></h1>
         
-        <div className="text-7xl mb-6">
+        <div className="text-6xl md:text-7xl mb-4 md:mb-6">
           {result.score >= 8 ? "🏆" : result.score >= 5 ? "🌟" : "📚"}
         </div>
-        <p className="text-2xl font-bold text-slate-600 mb-10 italic">
-          Er. {result.userName}, your score is <span className="text-indigo-600 text-4xl">{result.score}</span> / {result.total}
+        <p className="text-lg md:text-2xl font-bold text-slate-600 mb-8 md:mb-10 italic leading-relaxed px-2">
+          Er. {result.userName}, your score is <span className="text-indigo-600 text-3xl md:text-4xl">{result.score}</span> / {result.total}
         </p>
 
-        <div className="max-w-md mx-auto p-6 bg-slate-50 rounded-[2rem] border-2 border-slate-100 mb-8">
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Claim Your Credential</h3>
+        <div className="max-w-md mx-auto p-5 md:p-6 bg-slate-50 rounded-3xl md:rounded-4xl border-2 border-slate-100 mb-6 md:mb-8">
+          <h3 className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] md:tracking-[0.3em] mb-4">Claim Your Credential</h3>
           <input
             type="text"
             placeholder="Enter Full Name"
             value={certificateName}
             onChange={(e) => setCertificateName(e.target.value)}
-            className="w-full p-4 mb-4 rounded-xl border border-slate-200 bg-white font-bold outline-none focus:border-indigo-500 text-center"
+            className="w-full p-4 mb-4 rounded-xl border border-slate-200 bg-white font-bold outline-none focus:border-indigo-500 text-center text-sm md:text-base"
           />
           <button
             onClick={generateCertificate}
             disabled={isGenerating}
-            className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 uppercase tracking-widest text-sm"
+            className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 uppercase tracking-widest text-[10px] md:text-sm"
           >
             {isGenerating ? "GENERATING..." : "DOWNLOAD CERTIFICATE"}
           </button>
@@ -128,22 +128,22 @@ export default function ResultPage() {
 
         <canvas ref={canvasRef} className="hidden" />
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button onClick={() => window.location.reload()} className="px-8 py-4 bg-slate-900 text-white rounded-xl font-bold transition-all shadow-xl hover:scale-105 active:scale-95 uppercase tracking-widest text-sm">RESTART MISSION</button>
-          <button onClick={() => setShowReview(!showReview)} className="px-8 py-4 bg-white text-slate-900 border-2 border-slate-900 rounded-xl font-bold transition-all hover:bg-slate-50 uppercase tracking-widest text-sm">
+        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center w-full sm:w-auto">
+          <button onClick={() => window.location.reload()} className="w-full sm:w-auto px-6 md:px-8 py-4 bg-slate-900 text-white rounded-xl font-bold transition-all shadow-xl hover:scale-105 active:scale-95 uppercase tracking-widest text-[10px] md:text-sm">RESTART MISSION</button>
+          <button onClick={() => setShowReview(!showReview)} className="w-full sm:w-auto px-6 md:px-8 py-4 bg-white text-slate-900 border-2 border-slate-900 rounded-xl font-bold transition-all hover:bg-slate-50 uppercase tracking-widest text-[10px] md:text-sm">
             {showReview ? "HIDE ANALYSIS" : "ANALYZE ANSWERS"}
           </button>
         </div>
       </div>
 
       {showReview && (
-        <div className="w-full space-y-6 animate-in fade-in slide-in-from-top-10 duration-500">
-          <h2 className="text-4xl font-black text-slate-900 text-center mb-8 uppercase tracking-tighter">Detailed Analysis</h2>
+        <div className="w-full space-y-4 md:space-y-6 animate-in fade-in slide-in-from-top-10 duration-500">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 text-center mb-4 md:mb-8 uppercase tracking-tighter">Detailed Analysis</h2>
           {result.history.map((item, idx) => (
-            <div key={idx} className={`p-8 rounded-[2.5rem] border-4 glass-card ${item.isCorrect ? "border-emerald-100" : "border-rose-100"}`}>
-              <div className="flex items-start justify-between gap-4 mb-4">
-                <h3 className="text-xl font-bold text-slate-800 leading-tight">{item.question.question}</h3>
-                <span className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${item.isCorrect ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"}`}>
+            <div key={idx} className={`p-5 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border-4 glass-card ${item.isCorrect ? "border-emerald-100" : "border-rose-100"}`}>
+              <div className="flex items-start justify-between gap-3 md:gap-4 mb-4">
+                <h3 className="text-base md:text-xl font-bold text-slate-800 leading-tight">{item.question.question}</h3>
+                <span className={`px-3 md:px-4 py-1 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest whitespace-nowrap ${item.isCorrect ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"}`}>
                   {item.isCorrect ? "Correct" : "Mistake"}
                 </span>
               </div>

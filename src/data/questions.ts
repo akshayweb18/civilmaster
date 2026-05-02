@@ -4,7 +4,7 @@ export type Subject = "mixed" | "structures" | "geotech" | "transport" | "env" |
 export interface Question {
   id: string | number;
   question: string;
-  type: "mcq"; // FORCING MCQ ONLY
+  type?: "mcq"; // MCQ only; optional for existing entries
   difficulty: Difficulty;
   subject: Subject;
   options: string[]; // FORCING OPTIONS TO EXIST
