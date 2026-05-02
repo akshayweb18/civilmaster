@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { PwaInstallPrompt } from "../components/PwaInstallPrompt";
 
 export const metadata: Metadata = {
   title: "CivilMaster | Professional Quiz App",
@@ -38,6 +39,8 @@ export default function RootLayout({
         <footer className="px-4 py-6 md:p-12 text-center text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.35em] md:tracking-[0.5em] z-10">
           &copy; {new Date().getFullYear()} CivilMaster • Premium Professional Standard
         </footer>
+
+        <PwaInstallPrompt />
       </body>
     </html>
   );
