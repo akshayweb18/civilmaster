@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Script from "next/script";
+import PwaServiceWorker from "../components/PwaServiceWorker";
 import { PwaInstallPrompt } from "../components/PwaInstallPrompt";
 
 export const metadata: Metadata = {
@@ -19,6 +21,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="theme-color" content="#0f172a" />
+        <Script id="capture-beforeinstallprompt" strategy="beforeInteractive">
+          {`window.__deferredInstallPrompt = undefined; window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); window.__deferredInstallPrompt = e; });`}
+        </Script>
+      </head>
+
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-blue-100 antialiased transition-colors duration-500 overflow-x-hidden">
         <div className="bg-mesh" />
         
@@ -40,6 +50,7 @@ export default function RootLayout({
           &copy; {new Date().getFullYear()} CivilMaster • Premium Professional Standard
         </footer>
 
+        <PwaServiceWorker />
         <PwaInstallPrompt />
       </body>
     </html>

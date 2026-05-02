@@ -21,6 +21,11 @@ export function PwaInstallPrompt() {
 
 		window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
 
+		// If the event was captured earlier (script placed before hydration), pick it up
+		if ((window as any).__deferredInstallPrompt) {
+			setDeferredPrompt((window as any).__deferredInstallPrompt as BeforeInstallPromptEvent);
+		}
+
 		return () => {
 			window.clearTimeout(timer);
 			window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);

@@ -1,0 +1,18 @@
+{
+  "name": "CivilMaster",
+  "short_name": "CivilMaster",
+  "description": "Advanced Civil Engineering Quiz for Professionals and Students",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/civils.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

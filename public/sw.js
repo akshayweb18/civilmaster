@@ -1,11 +1,6 @@
-self.addEventListener("install", () => {
-    self.skipWaiting();
-});
 
-self.addEventListener("activate", (event) => {
-    event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener("fetch", () => {
-    // No offline cache yet; keep network behavior unchanged.
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+self.addEventListener('fetch', (event) => {
+    // Minimal handler so browsers can successfully fetch /sw.js
 });
